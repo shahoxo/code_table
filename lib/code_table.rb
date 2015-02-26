@@ -1,5 +1,5 @@
 require "code_table/version"
 
 module CodeTable
-  # Your code goes here...
+  autoload :Model, "code_table/model"
 end
