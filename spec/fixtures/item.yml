@@ -1,0 +1,8 @@
+weapon:
+  spear: 0
+  hammer: 1
+  sword: 2
+
+armor:
+  heavy: 0
+  light: 1

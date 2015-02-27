@@ -10,7 +10,7 @@ describe CodeTable::Loader do
 
     it 'should define type methods at loaded class' do
       Weapon.spear.should eq 0
-      Weapon.sword.should eq 2
+      Armor.light.should eq 1
     end
   end
 end
