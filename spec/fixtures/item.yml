@@ -1,7 +1,16 @@
 weapon:
-  spear: 0
-  hammer: 1
-  sword: 2
+  one_handed:
+    sword:
+      muramasa:
+        code: 100
+        strength: 123
+      kamui:
+        code: 200
+        strength: 115
+  two_handed:
+    kunai:
+      code: 300
+      strength: 99
 
 armor:
   heavy: 0
