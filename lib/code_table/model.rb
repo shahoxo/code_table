@@ -2,15 +2,15 @@ module CodeTable
   module Model
     class InvalidKindError < StandardError; end
 
-    attr_accessor :code, :type
-    alias id code
-
-    def initialize(code: nil, type: nil)
-      @code, @type = code, type
-    end
+    # attr_accessor :code, :type
+    # alias id code
+    #
+    # def initialize(code: nil, type: nil)
+    #   @code, @type = code, type
+    # end
 
     def ==(other)
-      return false if !(other.respond_to?(:id) && other.respond_to?(:type))
+      return false if !(other.respond_to?(:code) && other.respond_to?(:type))
       (code == other.code) && (type == other.type)
     end
 
@@ -42,7 +42,7 @@ module CodeTable
       end
 
       def all
-        kinds.keys.map{|key| build(type: key)}
+        @all || []
       end
     end
 

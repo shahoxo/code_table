@@ -3,25 +3,15 @@ module CodeTable
     def self.load
       Dir.glob(Pathname(CodeTable::Config.load_path).join('*.yml').to_s).each do |target_file|
         _kinds = CodeTable::Source.new(target_file).load
-        _kinds.each do |class_name, values|
-          build_code_table_class(class_name: class_name.capitalize, values: values)
+        _kinds.each do |class_name, records|
+          build_code_table_class(class_name: class_name.capitalize, records: records)
         end
       end
     end
 
-    def self.build_code_table_class(class_name:, values:)
-      return if Object.const_defined?(class_name)
-
-      klass = Class.new do |code_table_class|
-        include CodeTable::Model
-        @kinds = values
-
-        values.each do |name, value|
-          define_singleton_method(name) { value }
-        end
-      end
-
-      Object.const_set(class_name, klass)
+    def self.build_code_table_class(class_name:, records:)
+      CodeTable::Builder.new(class_name: class_name, records: records).build
+      # TODO: add to built code table list
     end
 
     def self.identifiable?(hash)

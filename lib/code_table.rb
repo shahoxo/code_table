@@ -1,4 +1,6 @@
 require "code_table/version"
+require "key_path"
+require "hashie/dash"
 
 module CodeTable
   autoload :Model, "code_table/model"
