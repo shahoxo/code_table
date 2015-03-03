@@ -28,6 +28,7 @@ module CodeTable
 
       built_records = Records.new(records: @records).build
       properties = built_records.map(&:keys).map(&:to_set).inject(&:+)
+      scopes = built_records.map{|hash| hash["scopes"] || []}.inject(&:+).to_set
 
       klass = Class.new(Hashie::Dash) do |code_table_class|
         include CodeTable::Model
@@ -42,6 +43,54 @@ module CodeTable
 
       Object.const_set(@class_name, klass)
       klass.instance_variable_set(:@all, built_records.map{|record| klass.new(record.map{|k, v| [k.to_sym, v]}.to_h)})
+
+
+      scoped_class_name = "Scoped" + @class_name
+      scoped_module_name = "Scopable" + @class_name
+      return if Object.const_defined?(scoped_class_name)
+      return if Object.const_defined?(scoped_module_name)
+
+      scoped_class = Object.const_set(scoped_class_name, Class.new)
+
+      scoped_module = Object.const_set(scoped_module_name, Module.new do |m|
+        scopes.each do |scope|
+          define_method scope do
+            if self.is_a? scoped_class
+              self << scope
+            else
+              scoped_class.new(scope)
+            end
+          end
+        end
+      end
+      )
+
+      scoped_class.class_eval do
+        include scoped_module
+
+        def initialize(scope)
+          @scopes = Set[scope]
+        end
+
+        def <<(scope)
+          @scopes << scope
+          self
+        end
+
+        def all
+          unscoped_class.all.select{|record| record.scopes.to_set.superset? @scopes}
+        end
+
+        def method_missing(*args)
+          all.send(*args)
+        end
+
+        define_method :unscoped_class do
+          klass
+        end
+      end
+
+      klass.send(:extend, scoped_module)
     end
 
     class Records
@@ -94,7 +143,7 @@ module CodeTable
         if value.is_a? Hash
           value.merge("name" => key)
         else
-          {key => value}
+          {"name" => key, "code" => value}
         end
       end
     end

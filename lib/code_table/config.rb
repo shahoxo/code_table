@@ -1,6 +1,7 @@
 module CodeTable
   module Config
-    @@load_path = "config/code_tables"
+    # @@load_path = "config/code_tables"
+    @@load_path = "spec/fixtures"
 
     def self.load_path
       @@load_path
