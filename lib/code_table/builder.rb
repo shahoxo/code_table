@@ -81,8 +81,8 @@ module CodeTable
           unscoped_class.all.select{|record| record.scopes.to_set.superset? @scopes}
         end
 
-        def method_missing(*args)
-          all.send(*args)
+        def method_missing(*args, &block)
+          all.send(*args, &block)
         end
 
         def inspect
