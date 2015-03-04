@@ -85,6 +85,10 @@ module CodeTable
           all.send(*args)
         end
 
+        def inspect
+          "#<#{self.class.name} #{all}>"
+        end
+
         define_method :unscoped_class do
           klass
         end
